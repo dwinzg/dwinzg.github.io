@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Darwin’s Website for DSCI521",
+    "section": "",
+    "text": "Hello world. I am Darwin and I like to eat noodles and play volleyball.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  }
+]
