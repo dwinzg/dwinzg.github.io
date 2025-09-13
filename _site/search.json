@@ -1,14 +1,14 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
+    "objectID": "mysite/about.html",
+    "href": "mysite/about.html",
     "title": "About",
     "section": "",
-    "text": "Hi, I am Darwin."
+    "text": "About this site"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
+    "objectID": "mysite/index.html",
+    "href": "mysite/index.html",
     "title": "Darwin’s Website for DSCI521",
     "section": "",
     "text": "Hello world. I am Darwin and I like to eat noodles and play volleyball.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
