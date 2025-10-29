@@ -69,7 +69,6 @@
 <body>
     <div class="header">
         <h1>We'll Be Right Back</h1>
-        <p>We're working on something awesome. In the meantime, enjoy this classic game!</p>
     </div>
 
     <div id="gameContainer">
@@ -81,7 +80,7 @@
     </div>
 
     <div class="instructions">
-        Press SPACE to start • Press SPACE or ↑ to jump
+        Press SPACE to start • Press SPACE to jump
     </div>
 
     <script>
@@ -135,19 +134,6 @@
             }
         });
 
-        document.addEventListener('keyup', function(e) {
-            if (e.code === 'ArrowUp') {
-                e.preventDefault();
-                if (!gameRunning && !gameOver) {
-                    startGame();
-                } else if (gameOver) {
-                    resetGame();
-                } else if (dino.grounded) {
-                    jump();
-                }
-            }
-        });
-
         function startGame() {
             gameRunning = true;
             gameOver = false;
@@ -171,6 +157,7 @@
                 dino.velY = -12;
                 dino.jumping = true;
                 dino.grounded = false;
+                score += 1; // Add 1 point for each jump
             }
         }
 
@@ -186,8 +173,13 @@
             };
             obstacles.push(obstacle);
             
-            // Schedule next obstacle
-            setTimeout(spawnObstacle, Math.random() * 2000 + 1500);
+            // Variable spacing: some close (800-1200ms), some far (1500-2500ms)
+            const isClose = Math.random() < 0.4; // 40% chance for close obstacles
+            const nextSpawnTime = isClose ? 
+                Math.random() * 400 + 800 :  // Close: 800-1200ms
+                Math.random() * 1000 + 1500; // Far: 1500-2500ms
+            
+            setTimeout(spawnObstacle, nextSpawnTime);
         }
 
         function updateDino() {
@@ -214,7 +206,6 @@
                 // Remove obstacles that are off screen
                 if (obstacles[i].x + obstacles[i].width < 0) {
                     obstacles.splice(i, 1);
-                    score += 10;
                 }
             }
         }
@@ -243,23 +234,65 @@
         }
 
         function drawDino() {
-            ctx.fillStyle = dino.color;
-            ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
-            
-            // Simple dino shape
             ctx.fillStyle = '#535353';
-            // Body
-            ctx.fillRect(dino.x + 5, dino.y + 5, 30, 25);
-            // Head
-            ctx.fillRect(dino.x + 20, dino.y - 5, 20, 15);
-            // Legs
-            if (gameRunning && Math.floor(Date.now() / 100) % 2) {
-                ctx.fillRect(dino.x + 10, dino.y + 30, 5, 10);
-                ctx.fillRect(dino.x + 25, dino.y + 35, 5, 5);
+            
+            // Dino body (main torso)
+            ctx.fillRect(dino.x + 6, dino.y + 15, 28, 20);
+            
+            // Dino head
+            ctx.fillRect(dino.x + 22, dino.y + 5, 18, 18);
+            
+            // Dino neck
+            ctx.fillRect(dino.x + 18, dino.y + 12, 8, 8);
+            
+            // Dino tail
+            ctx.fillRect(dino.x, dino.y + 18, 12, 8);
+            ctx.fillRect(dino.x - 4, dino.y + 20, 8, 4);
+            
+            // Eye
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(dino.x + 32, dino.y + 8, 3, 3);
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(dino.x + 33, dino.y + 9, 1, 1);
+            
+            // Dino legs (animated running)
+            ctx.fillStyle = '#535353';
+            const legAnimation = Math.floor(Date.now() / 150) % 4;
+            
+            if (!gameRunning || dino.jumping) {
+                // Static legs when not running or jumping
+                ctx.fillRect(dino.x + 10, dino.y + 35, 4, 8);
+                ctx.fillRect(dino.x + 24, dino.y + 35, 4, 8);
             } else {
-                ctx.fillRect(dino.x + 15, dino.y + 30, 5, 10);
-                ctx.fillRect(dino.x + 25, dino.y + 30, 5, 10);
+                // Animated running legs
+                switch(legAnimation) {
+                    case 0:
+                        ctx.fillRect(dino.x + 10, dino.y + 35, 4, 8);
+                        ctx.fillRect(dino.x + 24, dino.y + 33, 4, 10);
+                        break;
+                    case 1:
+                        ctx.fillRect(dino.x + 10, dino.y + 33, 4, 10);
+                        ctx.fillRect(dino.x + 24, dino.y + 35, 4, 8);
+                        break;
+                    case 2:
+                        ctx.fillRect(dino.x + 10, dino.y + 35, 4, 8);
+                        ctx.fillRect(dino.x + 24, dino.y + 35, 4, 8);
+                        break;
+                    case 3:
+                        ctx.fillRect(dino.x + 10, dino.y + 35, 4, 8);
+                        ctx.fillRect(dino.x + 24, dino.y + 35, 4, 8);
+                        break;
+                }
             }
+            
+            // Dino arms
+            ctx.fillRect(dino.x + 8, dino.y + 18, 3, 8);
+            ctx.fillRect(dino.x + 14, dino.y + 20, 3, 6);
+            
+            // Spikes on back
+            ctx.fillRect(dino.x + 12, dino.y + 12, 2, 4);
+            ctx.fillRect(dino.x + 16, dino.y + 10, 2, 6);
+            ctx.fillRect(dino.x + 20, dino.y + 12, 2, 4);
         }
 
         function drawObstacles() {
